@@ -129,8 +129,8 @@ cython_debug/
 .DS_Store
 
 # Media
-.mp4
-.mov
+*.mp4
+*.mov
 
 # YOLO
 yolo*.cfg

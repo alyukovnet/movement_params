@@ -1,0 +1,9 @@
+"""
+Frame processor interface and implementations
+"""
+from movement_params.frame_processors.frame_processor import FrameProcessor
+from movement_params.frame_processors.objects_detector import ObjectsDetector
+from movement_params.frame_processors.objects_tracker import ObjectsTracker
+from movement_params.frame_processors.objects_identifier import ObjectsIdentifier
+from movement_params.frame_processors.position_calculator import PositionCalculator
+from movement_params.frame_processors.params_calculator import ParamsCalculator
