@@ -37,7 +37,7 @@ files to `./movement_params/model` folder
 
 ### Config
 
-In [movement_params/CONFIG.py]() you can change paths of input/output 
+In [CONFIG.py](movement_params/CONFIG.py) you can change paths of input/output 
 resources and some settings.
 
 There are two configurations - Default and Debug (based on Default)

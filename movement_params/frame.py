@@ -25,34 +25,39 @@ class BoundingBox:
         self.x1, self.y1, self.x2, self.y2 = x1, y1, x2, y2
 
     @property
-    def h(self):
+    def h(self) -> int:
         """
-        Calculate height of box
-        :return: Height of box
+        Height of box
         """
         return self.y2-self.y1
 
     @property
-    def w(self):
+    def w(self) -> int:
         """
-        Calculate width of box
-        :return: Width of box
+        Width of box
         """
         return self.x2-self.x1
 
     @property
-    def p1(self):
+    def p1(self) -> tuple[int, int]:
         """
         Point 1 (left top)
         """
         return self.x1, self.y1
 
     @property
-    def p2(self):
+    def p2(self) -> tuple[int, int]:
         """
         Point 2 (right bottom)
         """
         return self.x2, self.y2
+
+    @property
+    def center(self) -> tuple[int, int]:
+        """
+        Center point
+        """
+        return (self.x2 - self.x1) // 2, (self.y2 - self.y1) // 2
 
     def __iter__(self) -> Generator[int]:
         """
