@@ -1,6 +1,7 @@
 from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Optional
+from numpy import ndarray
 
 from movement_params.io import Input, Output, StreamInput, WindowOutput, VideoFileInput
 from movement_params.frame_processors import FrameProcessor, ObjectsDetector, ObjectsTracker, ObjectsIdentifier, \
@@ -12,6 +13,8 @@ class Config:
     input_type: Input
     output_type: Optional[Output]
     processors: list[FrameProcessor]
+    camera_matrix: Optional[ndarray]
+    world_matrix: Optional[ndarray]
 
 
 processors = [
