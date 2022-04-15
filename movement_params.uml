@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Diagram>
+  <ID>Python</ID>
+  <OriginalElement>#/Users/alyu/projects/movement_params/movement_params</OriginalElement>
+  <nodes>
+    <node x="0.0" y="872.0">movement_params.frame_processors.objects_detector.ObjectsDetector</node>
+    <node x="1864.0" y="491.0763546798029">movement_params.io.output.WindowOutput</node>
+    <node x="622.0" y="884.0">movement_params.frame_processors.params_calculator.ParamsCalculator</node>
+    <node x="1268.0" y="745.0">movement_params.frame_processors.frame_processor.FrameProcessor</node>
+    <node x="207.06486042692939" y="-81.97044334975368">movement_params.CONFIG.Config</node>
+    <node x="1867.595238095238" y="-81.97044334975368">movement_params.frame.BoundingBox</node>
+    <node x="2492.0" y="884.0">movement_params.frame_processors.position_calculator.PositionCalculator</node>
+    <node x="2296.0" y="-81.97044334975368">movement_params.frame.ObjectType</node>
+    <node x="2265.0" y="514.0763546798029">movement_params.io.output.VideoFileOutput</node>
+    <node x="463.0" y="309.85221674876857">movement_params.io.input.Input</node>
+    <node x="50.0" y="502.85221674876857">movement_params.io.input.VideoFileInput</node>
+    <node x="805.0" y="535.8522167487686">movement_params.io.input.PhotoInput</node>
+    <node x="2301.0" y="364.0763546798029">movement_params.io.output.Output</node>
+    <node x="1386.1904761904761" y="-81.97044334975368">movement_params.frame.FrameObject</node>
+    <node x="1265.0" y="884.0">movement_params.frame_processors.objects_identifier.ObjectsIdentifier</node>
+    <node x="435.0" y="436.85221674876857">movement_params.io.input.StreamInput</node>
+    <node x="1011.7857142857142" y="-81.97044334975368">movement_params.frame.Frame</node>
+    <node x="1893.0" y="884.0">movement_params.frame_processors.objects_tracker.ObjectsTracker</node>
+    <node x="2675.0" y="491.0763546798029">movement_params.io.output.PhotoOutput</node>
+  </nodes>
+  <notes />
+  <edges>
+    <edge source="movement_params.io.output.WindowOutput" target="movement_params.io.output.Output" relationship="REALIZATION">
+      <point x="0.0" y="-60.5" />
+      <point x="2054.5" y="477.5763546798029" />
+      <point x="2460.0" y="477.5763546798029" />
+      <point x="0.0" y="38.5" />
+    </edge>
+    <edge source="movement_params.io.output.VideoFileOutput" target="movement_params.io.output.Output" relationship="REALIZATION">
+      <point x="0.0" y="-37.5" />
+      <point x="0.0" y="38.5" />
+    </edge>
+    <edge source="movement_params.io.input.StreamInput" target="movement_params.io.input.Input" relationship="REALIZATION">
+      <point x="0.0" y="-148.5" />
+      <point x="0.0" y="38.5" />
+    </edge>
+    <edge source="movement_params.frame_processors.objects_detector.ObjectsDetector" target="movement_params.frame_processors.frame_processor.FrameProcessor" relationship="REALIZATION">
+      <point x="0.0" y="-49.5" />
+      <point x="301.0" y="847.0" />
+      <point x="1569.0" y="847.0" />
+      <point x="0.0" y="38.5" />
+    </edge>
+    <edge source="movement_params.frame_processors.objects_identifier.ObjectsIdentifier" target="movement_params.frame_processors.frame_processor.FrameProcessor" relationship="REALIZATION">
+      <point x="0.0" y="-37.5" />
+      <point x="0.0" y="38.5" />
+    </edge>
+    <edge source="movement_params.io.input.PhotoInput" target="movement_params.io.input.Input" relationship="REALIZATION">
+      <point x="0.0" y="-49.5" />
+      <point x="975.0" y="411.85221674876857" />
+      <point x="610.0" y="411.85221674876857" />
+      <point x="0.0" y="38.5" />
+    </edge>
+    <edge source="movement_params.io.output.PhotoOutput" target="movement_params.io.output.Output" relationship="REALIZATION">
+      <point x="0.0" y="-60.5" />
+      <point x="2858.5" y="477.5763546798029" />
+      <point x="2460.0" y="477.5763546798029" />
+      <point x="0.0" y="38.5" />
+    </edge>
+    <edge source="movement_params.io.input.VideoFileInput" target="movement_params.io.input.Input" relationship="REALIZATION">
+      <point x="0.0" y="-82.5" />
+      <point x="232.5" y="411.85221674876857" />
+      <point x="610.0" y="411.85221674876857" />
+      <point x="0.0" y="38.5" />
+    </edge>
+    <edge source="movement_params.frame_processors.position_calculator.PositionCalculator" target="movement_params.frame_processors.frame_processor.FrameProcessor" relationship="REALIZATION">
+      <point x="0.0" y="-37.5" />
+      <point x="2808.5" y="847.0" />
+      <point x="1569.0" y="847.0" />
+      <point x="0.0" y="38.5" />
+    </edge>
+    <edge source="movement_params.frame_processors.params_calculator.ParamsCalculator" target="movement_params.frame_processors.frame_processor.FrameProcessor" relationship="REALIZATION">
+      <point x="0.0" y="-37.5" />
+      <point x="933.5" y="847.0" />
+      <point x="1569.0" y="847.0" />
+      <point x="0.0" y="38.5" />
+    </edge>
+    <edge source="movement_params.frame_processors.objects_tracker.ObjectsTracker" target="movement_params.frame_processors.frame_processor.FrameProcessor" relationship="REALIZATION">
+      <point x="0.0" y="-37.5" />
+      <point x="2182.5" y="847.0" />
+      <point x="1569.0" y="847.0" />
+      <point x="0.0" y="38.5" />
+    </edge>
+  </edges>
+  <settings layout="Hierarchic" zoom="0.3466931390209057" showDependencies="false" x="1574.596631014602" y="595.0644206764014" />
+  <SelectedNodes />
+  <Categories>
+    <Category>Fields</Category>
+    <Category>Inner Classes</Category>
+    <Category>Methods</Category>
+  </Categories>
+</Diagram>
+

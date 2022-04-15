@@ -82,6 +82,8 @@ class FrameObject:
     """
     prev_objects: list[FrameObject] = []
     id: Optional[int] = None
+    __box: BoundingBox
+    __type: ObjectType
 
     def __init__(self, box: BoundingBox, object_type: ObjectType):
         self.__box: BoundingBox = box
@@ -103,6 +105,7 @@ class Frame:
     created: datetime  # Creation time
     objects: list[FrameObject]  # Objects on frame
     __info: str = ''
+    __image: np.ndarray
 
     def __init__(self, frame: np.ndarray):
         """
