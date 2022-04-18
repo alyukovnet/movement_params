@@ -59,6 +59,44 @@ class BoundingBox:
         """
         return (self.x2 - self.x1) // 2, (self.y2 - self.y1) // 2
 
+    @property
+    def area(self) -> int:
+        """
+        Area
+        """
+        return (self.x2 - self.x1) * (self.y2 - self.y1)
+
+    def iou(self, box2: BoundingBox) -> float:
+        """
+        Get intersection-over-union value
+        :param box2: Box2
+        :return: Intersection-over-union value
+        """
+        xa = max(self.x1, box2.x1)
+        ya = max(self.y1, box2.y1)
+        xb = min(self.x2, box2.x2)
+        yb = min(self.y2, box2.y2)
+
+        intersection_area = max(0, xb - xa) * max(0, yb - ya)
+
+        iou = intersection_area / (box2.area + self.area - intersection_area)
+        return iou
+
+    def belongs_to(self, box2: BoundingBox) -> float:
+        """
+        Part of object belongs to box2
+        :param box2: Box2
+        :return: Part
+        """
+        xa = max(self.x1, box2.x1)
+        ya = max(self.y1, box2.y1)
+        xb = min(self.x2, box2.x2)
+        yb = min(self.y2, box2.y2)
+
+        interArea = max(0, xb - xa) * max(0, yb - ya)
+
+        return float(interArea) / float(self.area)
+
     def __iter__(self) -> Generator[int]:
         """
         Get box values (Left, Top, Right, Bottom)
@@ -81,7 +119,7 @@ class FrameObject:
     Object on Frame
     """
     prev_objects: list[FrameObject] = []
-    id: Optional[int] = None
+    obj_id: Optional[int] = None
     __box: BoundingBox
     __type: ObjectType
 
@@ -130,7 +168,7 @@ class Frame:
         image = self.__image.copy()
         for o in self.objects:
             cv2.rectangle(image, o.box.p1, o.box.p2, (0, 255, 0), 2)
-            # cv2.putText(image, f'{o.id}', (o.box.x1, o.box.y1 + 30), 0, 0.7, (0, 255, 0))
+            cv2.putText(image, f'{o.obj_id}', (o.box.x1, o.box.y1 + 40), 0, 0.7, (0, 255, 0))
 
         cv2.putText(image, self.__info, (10, 50), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 255), 2, cv2.LINE_AA)
         return image
