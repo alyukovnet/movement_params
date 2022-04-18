@@ -7,3 +7,4 @@ from movement_params.frame_processors.objects_tracker import ObjectsTracker
 from movement_params.frame_processors.objects_identifier import ObjectsIdentifier
 from movement_params.frame_processors.position_calculator import PositionCalculator
 from movement_params.frame_processors.params_calculator import ParamsCalculator
+from movement_params.frame_processors.movement_detector import MovementDetector

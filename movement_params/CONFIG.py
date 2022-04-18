@@ -5,7 +5,7 @@ from numpy import ndarray
 
 from movement_params.io import Input, Output, StreamInput, WindowOutput, VideoFileInput
 from movement_params.frame_processors import FrameProcessor, ObjectsDetector, ObjectsTracker, ObjectsIdentifier, \
-    PositionCalculator, ParamsCalculator
+    PositionCalculator, ParamsCalculator, MovementDetector
 
 
 @dataclass
@@ -18,8 +18,9 @@ class Config:
 
 
 processors = [
-    ObjectsDetector(),
-    # ObjectsTracker(),
+    # ObjectsDetector(),
+    MovementDetector(),
+    ObjectsTracker(),
     # ObjectsIdentifier(),
     # PositionCalculator(),
     # ParamsCalculator(),
