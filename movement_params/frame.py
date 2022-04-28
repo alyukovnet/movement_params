@@ -29,14 +29,14 @@ class BoundingBox:
         """
         Height of box
         """
-        return self.y2-self.y1
+        return self.y2 - self.y1
 
     @property
     def w(self) -> int:
         """
         Width of box
         """
-        return self.x2-self.x1
+        return self.x2 - self.x1
 
     @property
     def p1(self) -> tuple[int, int]:
@@ -123,9 +123,12 @@ class FrameObject:
     __box: BoundingBox
     __type: ObjectType
 
-    def __init__(self, box: BoundingBox, object_type: ObjectType):
+    def __init__(self, box: BoundingBox, object_type: ObjectType, speed, acceleration):
         self.__box: BoundingBox = box
         self.__type: ObjectType = object_type
+        self.coord = self.__box.center
+        self.speed = speed
+        self.acceleration = acceleration
 
     @property
     def box(self):
@@ -134,6 +137,15 @@ class FrameObject:
     @property
     def type(self):
         return self.__type
+
+    def coord(self):
+        return self.coord
+
+    def speed(self):
+        return self.speed
+
+    def acceleration(self):
+        return self.acceleration
 
 
 class Frame:
@@ -169,6 +181,8 @@ class Frame:
         for o in self.objects:
             cv2.rectangle(image, o.box.p1, o.box.p2, (0, 255, 0), 2)
             cv2.putText(image, f'{o.obj_id}', (o.box.x1, o.box.y1 + 40), 0, 0.7, (0, 255, 0))
+            cv2.putText(image, f'speed:{o.speed}', (o.box.x1, o.box.y1 + 60), 0, 0.7, (0, 255, 0))
+            cv2.putText(image, f'acceleration:{o.acceleration}', (o.box.x1, o.box.y1 + 80), 0, 0.7, (0, 255, 0))
 
         cv2.putText(image, self.__info, (10, 50), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 255), 2, cv2.LINE_AA)
         return image
