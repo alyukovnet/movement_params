@@ -180,9 +180,9 @@ class Frame:
         image = self.__image.copy()
         for o in self.objects:
             cv2.rectangle(image, o.box.p1, o.box.p2, (0, 255, 0), 2)
-            cv2.putText(image, f'{o.obj_id}', (o.box.x1, o.box.y1 + 40), 0, 0.7, (0, 255, 0))
-            cv2.putText(image, f'speed:{o.speed}', (o.box.x1, o.box.y1 + 60), 0, 0.7, (0, 255, 0))
-            cv2.putText(image, f'acceleration:{o.acceleration}', (o.box.x1, o.box.y1 + 80), 0, 0.7, (0, 255, 0))
+            cv2.putText(image, f'{o.obj_id}', (o.box.x1, o.box.y1 + 40), 0, 0.7, (0, 255, 0), 2)
+            cv2.putText(image, f'speed:{o.speed:0.3f}', (o.box.x1, o.box.y1 + 60), 0, 0.7, (0, 255, 0), 2)
+            cv2.putText(image, f'accel:{o.acceleration:0.3f}', (o.box.x1, o.box.y1 + 80), 0, 0.7, (0, 255, 0), 2)
 
         cv2.putText(image, self.__info, (10, 50), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 255), 2, cv2.LINE_AA)
         return image

@@ -36,7 +36,7 @@ class MovementDetector(FrameProcessor):
 
             box = BoundingBox(x, y, x + w, y + h)
 
-            if box.area < 700:
+            if box.area < 10000:
                 continue
 
             boxes.add(box)

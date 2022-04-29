@@ -20,6 +20,7 @@ class ParamsCalculator(FrameProcessor):
                     curx, cury = obj.box.center
                     curspeedx, curspeedy = curx-prevx, cury-prevy
                     obj.speed = ((curspeedx**2 + curspeedy**2)**0.5)/timebetweenframes
-                    obj.acceleration = obj.speed - obj2.speed
+                    if obj2.speed is not None:
+                        obj.acceleration = (obj.speed - obj2.speed)/timebetweenframes
         self.last_objects = frame.objects
         return frame
