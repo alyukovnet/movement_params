@@ -55,7 +55,7 @@ class MovementDetector(FrameProcessor):
         boxes -= boxes_to_delete
 
         for box in boxes:
-            frame_object = FrameObject(box, ObjectType.CAR, 1, 1)
+            frame_object = FrameObject(box, ObjectType.CAR)
 
             frame.objects.append(frame_object)
 

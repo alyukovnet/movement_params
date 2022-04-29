@@ -5,6 +5,7 @@ from typing import Generator, Optional
 import cv2
 import numpy as np
 from datetime import datetime
+from dataclasses import dataclass
 
 
 class BoundingBox:
@@ -114,21 +115,27 @@ class ObjectType:
     CAR = 2  # Num from coco.names
 
 
+@dataclass
+class MovementParams:
+    coordinates: tuple[float, float]
+    speed: float
+    acceleration: float
+
+
 class FrameObject:
     """
     Object on Frame
     """
-    prev_objects: list[FrameObject] = []
+    movement_params: list[MovementParams]
     obj_id: Optional[int] = None
     __box: BoundingBox
     __type: ObjectType
 
-    def __init__(self, box: BoundingBox, object_type: ObjectType, speed, acceleration):
+    def __init__(self, box: BoundingBox, object_type: ObjectType):
         self.__box: BoundingBox = box
         self.__type: ObjectType = object_type
         self.coord = self.__box.center
-        self.speed = speed
-        self.acceleration = acceleration
+        self.movement_params = [MovementParams(box.center, .0, .0)]
 
     @property
     def box(self):
@@ -138,14 +145,28 @@ class FrameObject:
     def type(self):
         return self.__type
 
-    def coord(self):
-        return self.coord
-
+    @property
     def speed(self):
-        return self.speed
+        return self.movement_params[-1].speed
 
+    @property
     def acceleration(self):
-        return self.acceleration
+        return self.movement_params[-1].acceleration
+
+    @speed.setter
+    def speed(self, value: float):
+        self.movement_params[-1].speed = value
+
+    @acceleration.setter
+    def acceleration(self, value: float):
+        self.movement_params[-1].acceleration = value
+
+    def merge(self, old_object: FrameObject):
+        """
+        Merge object movement params. Grant old object ID
+        """
+        self.obj_id = old_object.obj_id
+        self.movement_params = old_object.movement_params + self.movement_params
 
 
 class Frame:
