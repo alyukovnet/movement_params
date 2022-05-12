@@ -57,7 +57,7 @@ class BoundingBox:
         """
         Center point
         """
-        return (self.x2 - self.x1) // 2, (self.y2 - self.y1) // 2
+        return (self.x2 + self.x1) // 2, (self.y2 + self.y1) // 2
 
     @property
     def area(self) -> int:
@@ -177,6 +177,8 @@ class Frame:
         for o in self.objects:
             cv2.rectangle(image, o.box.p1, o.box.p2, (0, 255, 0), 2)
             cv2.putText(image, f'{o.obj_id}', (o.box.x1, o.box.y1 + 40), 0, 0.7, (0, 255, 0))
+            cv2.putText(image, f'{round(o.world_pos[0], 2)}, {round(o.world_pos[1], 2)}',
+                        (o.box.x1, o.box.y1 + 60), 0, 0.7, (0, 255, 0))
 
         cv2.putText(image, self.__info, (10, 50), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 255), 2, cv2.LINE_AA)
         return image
