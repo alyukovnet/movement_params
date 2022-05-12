@@ -68,10 +68,12 @@ class ParamsCalculator(FrameProcessor):
         if self.flag == 1:
             sumx, sumy, sumx2, sumxy, sumy1, sumxy1 = 0, 0, 0, 0, 0, 0
             for obj in frame.objects:
-                n = 3
-                if len(obj.movement_params) > 2:
-                    last = [obj.movement_params[-3].coordinates,
-                            obj.movement_params[-2].coordinates, obj.movement_params[-1].coordinates]
+                n = 4
+                if len(obj.movement_params) > 6:
+                    last = [obj.movement_params[-7].coordinates,
+                            obj.movement_params[-4].coordinates,
+                            obj.movement_params[-2].coordinates,
+                            obj.movement_params[-1].coordinates]
                     p = 1
                     for j in last:
                         sumx += p
@@ -97,14 +99,15 @@ class ParamsCalculator(FrameProcessor):
         else:
             sumx, sumx2, sumx3, sumx4, sumy, sumyx, sumyx2 = 0, 0, 0, 0, 0, 0, 0
             for obj in frame.objects:
-                n = 10
-                if len(obj.movement_params) > 9:
-                    bebra = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
-                    last = [obj.movement_params[-10].coordinates, obj.movement_params[-9].coordinates,
-                            obj.movement_params[-8].coordinates, obj.movement_params[-7].coordinates,
-                            obj.movement_params[-6].coordinates, obj.movement_params[-5].coordinates,
-                            obj.movement_params[-4].coordinates, obj.movement_params[-3].coordinates,
-                            obj.movement_params[-2].coordinates, obj.movement_params[-1].coordinates]
+                n = 6
+                if len(obj.movement_params) > 11:
+                    bebra = [1, 2, 3, 4, 5, 6]
+                    last = [obj.movement_params[-12].coordinates,
+                            obj.movement_params[-9].coordinates,
+                            obj.movement_params[-6].coordinates,
+                            obj.movement_params[-3].coordinates,
+                            obj.movement_params[-2].coordinates,
+                            obj.movement_params[-1].coordinates]
                     for j in bebra:
                         sumx += j
                         sumx2 += j**2
@@ -116,9 +119,9 @@ class ParamsCalculator(FrameProcessor):
                     lm = [[sumx2, sumx, n], [sumx3, sumx2, sumx], [sumx4, sumx3, sumx2]]
                     rm = [sumy, sumyx, sumyx2]
                     x = LA.solve(lm, rm)
-                    x1 = int((n + 5) * x[0] + (n + 5) * x[1] + x[2])
-                    x2 = int((n + 10) * x[0] + (n + 10) * x[1] + x[2])
-                    x3 = int((n + 15) * x[0] + (n + 15) * x[1] + x[2])
+                    x1 = int((n + 3) * x[0] + (n + 3) * x[1] + x[2])
+                    x2 = int((n + 6) * x[0] + (n + 6) * x[1] + x[2])
+                    x3 = int((n + 9) * x[0] + (n + 9) * x[1] + x[2])
                     sumx, sumx2, sumx3, sumx4, sumy, sumyx, sumyx2 = 0, 0, 0, 0, 0, 0, 0
 
                     for i in last:

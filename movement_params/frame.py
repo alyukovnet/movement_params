@@ -232,9 +232,11 @@ class Frame:
             cv2.putText(image, f'speed:{o.speed:0.3f}', (o.box.x1, o.box.y1 + 60), 0, 0.7, (0, 255, 0), 2)
             cv2.putText(image, f'accel:{o.acceleration:0.3f}', (o.box.x1, o.box.y1 + 80), 0, 0.7, (0, 255, 0), 2)
             if o.pred1[0] > 0 and o.pred1[1] > 0:
-                cv2.line(image,  o.box.center, o.pred1, (0, 255, 0), 2)
-                cv2.line(image, o.pred1, o.pred2, (0, 255, 0), 2)
-                cv2.line(image, o.pred2, o.pred3, (0, 255, 0), 2)
+                cv2.line(image,  o.box.center, o.pred1, (255, 0, 0), 2)
+                if o.pred2[0] > 0 and o.pred2[1] > 0:
+                    cv2.line(image, o.pred1, o.pred2, (255, 0, 0), 2)
+                    if o.pred3[0] > 0 and o.pred3[1] > 0:
+                        cv2.line(image, o.pred2, o.pred3, (255, 0, 0), 2)
 
         cv2.putText(image, self.__info, (10, 50), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 255), 2, cv2.LINE_AA)
         return image

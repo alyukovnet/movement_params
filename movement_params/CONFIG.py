@@ -20,7 +20,7 @@ processors = [
     ObjectsTracker(),
     # ObjectsIdentifier(),
     # PositionCalculator(),
-    ParamsCalculator(0),
+    ParamsCalculator(1),
 ]
 
 
