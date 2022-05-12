@@ -4,6 +4,7 @@ from typing import Optional
 
 from numpy import ndarray, array
 
+from movement_params.CONFIG_STATIC import StaticConfig
 from movement_params.io import Input, Output, StreamInput, WindowOutput, VideoFileInput
 from movement_params.frame_processors import FrameProcessor, ObjectsDetector, ObjectsTracker, ObjectsIdentifier, \
     PositionCalculator, ParamsCalculator, MovementDetector
@@ -13,9 +14,7 @@ from movement_params.frame_processors import FrameProcessor, ObjectsDetector, Ob
 class Config:
     input_type: Input
     output_type: Optional[Output] = field(default_factory=lambda: WindowOutput())
-    world_matrix: Optional[ndarray] = field(default_factory=lambda: array([[0, 0], [1, 0], [1, 1], [0, 1]]))
-    camera_matrix: Optional[ndarray] = field(default_factory=lambda: array([[0, 0], [1, 0], [1, 1], [0, 1]]))
-    aruco_ids: Optional[ndarray] = field(default_factory=lambda: array([128, 129, 130, 131]))
+    static: StaticConfig = field(default_factory=lambda: StaticConfig)
     processors: list[FrameProcessor] = field(default_factory=lambda: processors)
 
 
