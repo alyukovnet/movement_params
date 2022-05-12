@@ -58,7 +58,7 @@ class BoundingBox:
         """
         Center point
         """
-        return (self.x2 - self.x1) // 2, (self.y2 - self.y1) // 2
+        return self.x1 + ((self.x2 - self.x1) // 2), self.y2 + ((self.y1 - self.y2) // 2)
 
     @property
     def area(self) -> int:
@@ -120,6 +120,9 @@ class MovementParams:
     coordinates: tuple[float, float]
     speed: float
     acceleration: float
+    pred1: tuple[int, int]
+    pred2: tuple[int, int]
+    pred3: tuple[int, int]
 
 
 class FrameObject:
@@ -135,7 +138,7 @@ class FrameObject:
         self.__box: BoundingBox = box
         self.__type: ObjectType = object_type
         self.coord = self.__box.center
-        self.movement_params = [MovementParams(box.center, .0, .0)]
+        self.movement_params = [MovementParams(box.center, .0, .0, (0, 0), (0, 0), (0, 0))]
 
     @property
     def box(self):
@@ -150,12 +153,36 @@ class FrameObject:
         return self.movement_params[-1].speed
 
     @property
+    def pred1(self):
+        return self.movement_params[-1].pred1
+
+    @property
+    def pred2(self):
+        return self.movement_params[-1].pred2
+
+    @property
+    def pred3(self):
+        return self.movement_params[-1].pred3
+
+    @property
     def acceleration(self):
         return self.movement_params[-1].acceleration
 
     @speed.setter
     def speed(self, value: float):
         self.movement_params[-1].speed = value
+
+    @pred1.setter
+    def pred1(self, value: tuple[int, int]):
+        self.movement_params[-1].pred1 = value
+
+    @pred2.setter
+    def pred2(self, value: tuple[int, int]):
+        self.movement_params[-1].pred2 = value
+
+    @pred3.setter
+    def pred3(self, value: tuple[int, int]):
+        self.movement_params[-1].pred3 = value
 
     @acceleration.setter
     def acceleration(self, value: float):
@@ -204,6 +231,10 @@ class Frame:
             cv2.putText(image, f'{o.obj_id}', (o.box.x1, o.box.y1 + 40), 0, 0.7, (0, 255, 0), 2)
             cv2.putText(image, f'speed:{o.speed:0.3f}', (o.box.x1, o.box.y1 + 60), 0, 0.7, (0, 255, 0), 2)
             cv2.putText(image, f'accel:{o.acceleration:0.3f}', (o.box.x1, o.box.y1 + 80), 0, 0.7, (0, 255, 0), 2)
+            if o.pred1[0] > 0 and o.pred1[1] > 0:
+                cv2.line(image,  o.box.center, o.pred1, (0, 255, 0), 2)
+                cv2.line(image, o.pred1, o.pred2, (0, 255, 0), 2)
+                cv2.line(image, o.pred2, o.pred3, (0, 255, 0), 2)
 
         cv2.putText(image, self.__info, (10, 50), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 255), 2, cv2.LINE_AA)
         return image
