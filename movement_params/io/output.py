@@ -14,6 +14,10 @@ class Output:
     __metaclass__ = ABCMeta
 
     @abstractmethod
+    def window_title(self):
+        pass
+
+    @abstractmethod
     def push(self, frame: Frame):
         pass
 
@@ -41,20 +45,28 @@ class PhotoOutput(Output):
 
 class VideoFileOutput(Output):
     def __init__(self):
-        logging.warn('Video File Output now is not supported')
+        logging.warning('Video File Output now is not supported')
 
     def push(self, frame: Frame):
-        logging.warn('Video File Output now is not supported')
+        logging.warning('Video File Output now is not supported')
 
 
 class WindowOutput(Output):
     def __init__(self, window_name: str = 'Processed frame'):
         self.__window_name = window_name
         self.__sec = time()
+        cv2.namedWindow(self.__window_name, cv2.WINDOW_AUTOSIZE)
+
+    @property
+    def window_title(self):
+        return self.__window_name
 
     def push(self, frame: Frame):
-        fps = 1 / (time() - self.__sec)
+        delta: float = time() - self.__sec
+        fps = .0 if delta == .0 else 1 / delta
         self.__sec = time()
         frame.put_info(f'{fps:0.3}')
         cv2.imshow(self.__window_name, frame.info_image)
-        cv2.pollKey()
+        button_code = cv2.pollKey()
+        if button_code == 27:  # escape pressed
+            cv2.destroyAllWindows()

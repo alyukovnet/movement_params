@@ -139,18 +139,22 @@ class FrameObject:
         self.__type: ObjectType = object_type
         self.coord = self.__box.center
         self.movement_params = [MovementParams(box.center, .0, .0, (0, 0), (0, 0), (0, 0))]
+        self.__world_pos: tuple[float, float] = (.0, .0)
 
     @property
-    def box(self):
+    def box(self) -> BoundingBox:
         return self.__box
 
     @property
-    def type(self):
+    def type(self) -> ObjectType:
         return self.__type
 
     @property
     def speed(self):
         return self.movement_params[-1].speed
+    @property
+    def world_pos(self) -> tuple[float, float]:
+        return self.__world_pos
 
     @property
     def pred1(self):
@@ -194,6 +198,10 @@ class FrameObject:
         """
         self.obj_id = old_object.obj_id
         self.movement_params = old_object.movement_params + self.movement_params
+
+
+    def set_world_pos(self, pos: tuple[float, float]) -> None:
+        self.__world_pos = pos
 
 
 class Frame:
