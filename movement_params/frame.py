@@ -118,11 +118,13 @@ class ObjectType:
 @dataclass
 class MovementParams:
     coordinates: tuple[float, float]
+    wpcoord: tuple[float, float]
     speed: float
     acceleration: float
     pred1: tuple[int, int]
     pred2: tuple[int, int]
     pred3: tuple[int, int]
+    speedvec: tuple[float, float]
 
 
 class FrameObject:
@@ -138,8 +140,9 @@ class FrameObject:
         self.__box: BoundingBox = box
         self.__type: ObjectType = object_type
         self.coord = self.__box.center
-        self.movement_params = [MovementParams(box.center, .0, .0, (0, 0), (0, 0), (0, 0))]
         self.__world_pos: tuple[float, float] = (.0, .0)
+        self.movement_params = [MovementParams(box.center, self.world_pos, .0, .0, (0, 0), (0, 0), (0, 0), (.0, .0))]
+
 
     @property
     def box(self) -> BoundingBox:
@@ -152,6 +155,7 @@ class FrameObject:
     @property
     def speed(self):
         return self.movement_params[-1].speed
+
     @property
     def world_pos(self) -> tuple[float, float]:
         return self.__world_pos
@@ -171,6 +175,14 @@ class FrameObject:
     @property
     def acceleration(self):
         return self.movement_params[-1].acceleration
+
+    @property
+    def wpcoord(self):
+        return self.movement_params[-1].wpcoord
+
+    @property
+    def speedvec(self):
+        return self.movement_params[-1].speedvec
 
     @speed.setter
     def speed(self, value: float):
@@ -192,13 +204,20 @@ class FrameObject:
     def acceleration(self, value: float):
         self.movement_params[-1].acceleration = value
 
+    @wpcoord.setter
+    def wpcoord(self, value: tuple[float, float]):
+        self.movement_params[-1].wpcoord = value
+
+    @speedvec.setter
+    def speedvec(self, value: tuple[float, float]):
+        self.movement_params[-1].speedvec = value
+
     def merge(self, old_object: FrameObject):
         """
         Merge object movement params. Grant old object ID
         """
         self.obj_id = old_object.obj_id
         self.movement_params = old_object.movement_params + self.movement_params
-
 
     def set_world_pos(self, pos: tuple[float, float]) -> None:
         self.__world_pos = pos
@@ -237,8 +256,9 @@ class Frame:
         for o in self.objects:
             cv2.rectangle(image, o.box.p1, o.box.p2, (0, 255, 0), 2)
             cv2.putText(image, f'{o.obj_id}', (o.box.x1, o.box.y1 + 40), 0, 0.7, (0, 255, 0), 2)
-            cv2.putText(image, f'speed:{o.speed:0.3f}', (o.box.x1, o.box.y1 + 60), 0, 0.7, (0, 255, 0), 2)
-            cv2.putText(image, f'accel:{o.acceleration:0.3f}', (o.box.x1, o.box.y1 + 80), 0, 0.7, (0, 255, 0), 2)
+            cv2.putText(image, f'coord:{o.world_pos[0]:0.2f} {o.world_pos[1]:0.2f}', (o.box.x1, o.box.y1 + 60), 0, 0.7, (0, 255, 0), 2)
+            cv2.putText(image, f'speed:{o.speed:0.3f}', (o.box.x1, o.box.y1 + 80), 0, 0.7, (0, 255, 0), 2)
+            cv2.putText(image, f'accel:{o.acceleration:0.3f}', (o.box.x1, o.box.y1 + 100), 0, 0.7, (0, 255, 0), 2)
             if o.pred1[0] > 0 and o.pred1[1] > 0:
                 cv2.line(image,  o.box.center, o.pred1, (255, 0, 0), 2)
                 if o.pred2[0] > 0 and o.pred2[1] > 0:
