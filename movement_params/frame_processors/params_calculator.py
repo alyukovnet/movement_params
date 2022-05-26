@@ -28,6 +28,20 @@ def middle(a: float, b: float, c: float):
     return mid
 
 
+def collect_data(flag: int, data: float, id: int):
+    if id == 30:
+        if flag == 0:
+            file = open('without.txt', 'a')
+            file.write(str(data))
+            file.write('\n')
+            file.close()
+        else:
+            file = open('with.txt', 'a')
+            file.write(str(data))
+            file.write('\n')
+            file.close()
+
+
 class ParamsCalculator(FrameProcessor):
     def __init__(self, flag: int):
         # self.last_objects: list[FrameObject] = []
@@ -40,62 +54,65 @@ class ParamsCalculator(FrameProcessor):
         for obj in frame.objects:
             # for obj2 in self.last_objects:
             #     if obj.obj_id == obj2.obj_id:
+            obj.wpcoord = obj.world_pos
             if len(obj.movement_params) > 2:
-                obj2_params = obj.movement_params[-3]
-
-                prevx, prevy = obj2_params.coordinates
-                curx, cury = obj.box.center
+                obj2_params = obj.movement_params[-2]
+                prevx, prevy = obj2_params.wpcoord
+                curx, cury = obj.world_pos
                 curspeedx, curspeedy = curx - prevx, cury - prevy
+                obj.speedvec = (curspeedx, curspeedy)
                 obj.speed = ((curspeedx ** 2 + curspeedy ** 2) ** 0.5) / timebetweenframes
+                # collect_data(0, obj.speed, obj.obj_id)
                 midspeed = middle(obj.movement_params[-3].speed, obj.movement_params[-2].speed,
                                   obj.movement_params[-1].speed)
-                k = 0.1
-                if abs(obj.speed - midspeed) > 100:
+                k = 0.5
+                if abs(obj.speed - midspeed) > 20:
                     k = 0.3
                 obj.speed = (obj.speed - midspeed) * k + midspeed
-                k = 0.1
+                # collect_data(1, obj.speed, obj.obj_id)
+                k = 0.5
                 # k - коэф, больше - точнее, меньше - плавнее
                 if obj2_params.speed is not None:
-                    obj.acceleration = (obj.speed - obj2_params.speed) / timebetweenframes
+                    # obj.acceleration = abs((obj.speed - obj2_params.speed) / timebetweenframes)
+                    obj.acceleration = ((obj.speedvec[0] - obj2_params.speedvec[0])**2 + (obj.speedvec[1] - obj2_params.speedvec[1])**2)**0.5
+                    # collect_data(0, obj.acceleration, obj.obj_id)
                     midacc = middle(obj.movement_params[-3].acceleration, obj.movement_params[-2].acceleration,
                                     obj.movement_params[-1].acceleration)
-                    if abs(obj.acceleration - midacc) > 400:
+                    if abs(obj.acceleration - midacc) > 10:
                         k = 0.3
                     obj.acceleration = (obj.acceleration - midacc) * k + midacc
-                    k = 0.1
+                    # collect_data(1, obj.acceleration, obj.obj_id)
+                    k = 0.5
         # self.last_objects = frame.objects
         # prediction
         if self.flag == 1:
             sumx, sumy, sumx2, sumxy, sumy1, sumxy1 = 0, 0, 0, 0, 0, 0
             for obj in frame.objects:
-                n = 4
-                if len(obj.movement_params) > 6:
-                    last = [obj.movement_params[-7].coordinates,
-                            obj.movement_params[-4].coordinates,
-                            obj.movement_params[-2].coordinates,
+                n = 3
+                if len(obj.movement_params) > 4:
+                    last = [obj.movement_params[-5].coordinates,
+                            obj.movement_params[-3].coordinates,
                             obj.movement_params[-1].coordinates]
-                    p = 1
+                    p = 0
                     for j in last:
                         sumx += p
                         sumx2 += p**2
                         sumy += j[0]
                         sumxy += p * j[0]
                         p += 1
-                    a = (n * sumxy - sumx * sumy) // (n * sumx2 - sumx ** 2 + 0.0001)
-                    b = (sumy - a * sumx) // n
-                    x = int(a*2*n + b) * 2
+                    a = (n * sumxy - sumx * sumy) / (n * sumx2 - sumx ** 2 + 0.0001)
+                    b = (sumy - a * sumx) / n
+                    x = int(a*(p + 10) + b)
                     sumx, sumy, sumx2, sumxy, sumy1, sumxy1 = 0, 0, 0, 0, 0, 0
                     for i in last:
                         sumx += i[0]
                         sumy += i[1]
                         sumx2 += i[0]**2
                         sumxy += i[0]*i[1]
-                    a = (n * sumxy - sumx * sumy)//(n * sumx2 - sumx**2 + 0.0001)
-                    b = (sumy - a * sumx)//n
-                    y = int(a*x + b) * 2
+                    a = (n * sumxy - sumx * sumy)/(n * sumx2 - sumx**2 + 0.0001)
+                    b = (sumy - a * sumx)/n
+                    y = int(a * x + b)
                     obj.pred1 = x, y
-                    obj.pred2 = x, y
-                    obj.pred3 = x, y
         else:
             sumx, sumx2, sumx3, sumx4, sumy, sumyx, sumyx2 = 0, 0, 0, 0, 0, 0, 0
             for obj in frame.objects:
