@@ -6,6 +6,8 @@ from time import time
 import cv2
 import numpy as np
 from numpy import linalg as LA
+from movement_params.frame_processors.position_calculator import LocationConverter, PlaneFinder
+from movement_params.CONFIG_STATIC import default_static as CFG
 
 
 def middle(a: float, b: float, c: float):
@@ -85,14 +87,29 @@ class ParamsCalculator(FrameProcessor):
                     k = 0.5
         # self.last_objects = frame.objects
         # prediction
+        ids = CFG.aruco_ids
+        camera_matrix = np.array([[0, 0], [1, 0], [1, 1], [0, 1]])
+        world_matrix = CFG.world_matrix
+        converter = LocationConverter(camera_matrix, world_matrix)
+        plane_finder = PlaneFinder(ids)
+        codes = plane_finder.get_aruco_codes(frame.image)
+        plane = plane_finder.extract_plane(codes)
+        plane = np.array(plane)
+        converter.set_camera_matrix(plane)
+
+        # camera_matrix = np.array([[0, 0], [1, 0], [1, 1], [0, 1]])
+
         if self.flag == 1:
             sumx, sumy, sumx2, sumxy, sumy1, sumxy1 = 0, 0, 0, 0, 0, 0
             for obj in frame.objects:
                 n = 3
                 if len(obj.movement_params) > 4:
-                    last = [obj.movement_params[-5].coordinates,
-                            obj.movement_params[-3].coordinates,
-                            obj.movement_params[-1].coordinates]
+                    # last = [obj.movement_params[-5].coordinates,
+                    #         obj.movement_params[-3].coordinates,
+                    #         obj.movement_params[-1].coordinates]
+                    last = [obj.movement_params[-5].wpcoord,
+                            obj.movement_params[-3].wpcoord,
+                            obj.movement_params[-1].wpcoord]
                     p = 0
                     for j in last:
                         sumx += p
@@ -102,7 +119,8 @@ class ParamsCalculator(FrameProcessor):
                         p += 1
                     a = (n * sumxy - sumx * sumy) / (n * sumx2 - sumx ** 2 + 0.0001)
                     b = (sumy - a * sumx) / n
-                    x = int(a*(p + 10) + b)
+                    # x = int(a*(p + 10) + b)
+                    x = a * (p + 10) + b
                     sumx, sumy, sumx2, sumxy, sumy1, sumxy1 = 0, 0, 0, 0, 0, 0
                     for i in last:
                         sumx += i[0]
@@ -111,20 +129,29 @@ class ParamsCalculator(FrameProcessor):
                         sumxy += i[0]*i[1]
                     a = (n * sumxy - sumx * sumy)/(n * sumx2 - sumx**2 + 0.0001)
                     b = (sumy - a * sumx)/n
-                    y = int(a * x + b)
-                    obj.pred1 = x, y
+                    # y = int(a * x + b)
+                    y = a * x + b
+                    s = converter.world_to_camera((x, y))
+                    obj.pred1 = (int(s[0]), int(s[1]))
+
         else:
             sumx, sumx2, sumx3, sumx4, sumy, sumyx, sumyx2 = 0, 0, 0, 0, 0, 0, 0
             for obj in frame.objects:
                 n = 6
                 if len(obj.movement_params) > 11:
                     bebra = [1, 2, 3, 4, 5, 6]
-                    last = [obj.movement_params[-12].coordinates,
-                            obj.movement_params[-9].coordinates,
-                            obj.movement_params[-6].coordinates,
-                            obj.movement_params[-3].coordinates,
-                            obj.movement_params[-2].coordinates,
-                            obj.movement_params[-1].coordinates]
+                    # last = [obj.movement_params[-12].coordinates,
+                    #         obj.movement_params[-9].coordinates,
+                    #         obj.movement_params[-6].coordinates,
+                    #         obj.movement_params[-3].coordinates,
+                    #         obj.movement_params[-2].coordinates,
+                    #         obj.movement_params[-1].coordinates]
+                    last = [obj.movement_params[-12].wpcoord,
+                            obj.movement_params[-9].wpcoord,
+                            obj.movement_params[-6].wpcoord,
+                            obj.movement_params[-3].wpcoord,
+                            obj.movement_params[-2].wpcoord,
+                            obj.movement_params[-1].wpcoord]
                     for j in bebra:
                         sumx += j
                         sumx2 += j**2
@@ -136,9 +163,12 @@ class ParamsCalculator(FrameProcessor):
                     lm = [[sumx2, sumx, n], [sumx3, sumx2, sumx], [sumx4, sumx3, sumx2]]
                     rm = [sumy, sumyx, sumyx2]
                     x = LA.solve(lm, rm)
-                    x1 = int((n + 3) * x[0] + (n + 3) * x[1] + x[2])
-                    x2 = int((n + 6) * x[0] + (n + 6) * x[1] + x[2])
-                    x3 = int((n + 9) * x[0] + (n + 9) * x[1] + x[2])
+                    # x1 = int((n + 3) * x[0] + (n + 3) * x[1] + x[2])
+                    # x2 = int((n + 6) * x[0] + (n + 6) * x[1] + x[2])
+                    # x3 = int((n + 9) * x[0] + (n + 9) * x[1] + x[2])
+                    x1 = (n + 3) * x[0] + (n + 3) * x[1] + x[2]
+                    x2 = (n + 6) * x[0] + (n + 6) * x[1] + x[2]
+                    x3 = (n + 9) * x[0] + (n + 9) * x[1] + x[2]
                     sumx, sumx2, sumx3, sumx4, sumy, sumyx, sumyx2 = 0, 0, 0, 0, 0, 0, 0
 
                     for i in last:
@@ -152,10 +182,19 @@ class ParamsCalculator(FrameProcessor):
                     lm = [[sumx2, sumx, n], [sumx3, sumx2, sumx], [sumx4, sumx3, sumx2]]
                     rm = [sumy, sumyx, sumyx2]
                     x = LA.solve(lm, rm)
-                    y1 = int((x1**2)*x[0] + x1*x[1] + x[2])
-                    obj.pred1 = x1, y1
-                    y2 = int((x2**2)*x[0] + x2*x[1] + x[2])
-                    obj.pred2 = x2, y2
-                    y3 = int((x3**2)*x[0] + x3*x[1] + x[2])
-                    obj.pred3 = x3, y3
+                    # y1 = int((x1 ** 2) * x[0] + x1 * x[1] + x[2])
+                    # obj.pred1 = x1, y1
+                    # y2 = int((x2 ** 2) * x[0] + x2 * x[1] + x[2])
+                    # obj.pred2 = x2, y2
+                    # y3 = int((x3 ** 2) * x[0] + x3 * x[1] + x[2])
+                    # obj.pred3 = x3, y3
+                    y1 = (x1 ** 2) * x[0] + x1 * x[1] + x[2]
+                    s = converter.world_to_camera((x1, y1))
+                    obj.pred1 = (int(s[0]), int(s[1]))
+                    y2 = (x2 ** 2) * x[0] + x2 * x[1] + x[2]
+                    s = converter.world_to_camera((x2, y2))
+                    obj.pred1 = (int(s[0]), int(s[1]))
+                    y3 = (x3 ** 2) * x[0] + x3 * x[1] + x[2]
+                    s = converter.world_to_camera((x3, y3))
+                    obj.pred1 = (int(s[0]), int(s[1]))
         return frame
