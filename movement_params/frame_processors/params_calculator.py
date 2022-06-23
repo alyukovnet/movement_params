@@ -76,7 +76,7 @@ class ParamsCalculator(FrameProcessor):
                 # k - коэф, больше - точнее, меньше - плавнее
                 if obj2_params.speed is not None:
                     # obj.acceleration = abs((obj.speed - obj2_params.speed) / timebetweenframes)
-                    obj.acceleration = ((obj.speedvec[0] - obj2_params.speedvec[0])**2 + (obj.speedvec[1] - obj2_params.speedvec[1])**2)**0.5
+                    obj.acceleration = (((obj.speedvec[0] - obj2_params.speedvec[0])**2 + (obj.speedvec[1] - obj2_params.speedvec[1])**2)**0.5) / timebetweenframes
                     # collect_data(0, obj.acceleration, obj.obj_id)
                     midacc = middle(obj.movement_params[-3].acceleration, obj.movement_params[-2].acceleration,
                                     obj.movement_params[-1].acceleration)
